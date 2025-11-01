@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Vendor Menu{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Your Menu</h2>
+
+<a href="/vendor/menu/add" class="btn btn-primary">+ Add Item</a>
+
+<table class="table mt-2">
+<tr>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Price (₹)</th>
+    <th>Image</th>
+    <th>Status</th>
+    <th>Actions</th>
+</tr>
+
+{% for item in menu %}
+<tr>
+    <td>{{ item.name }}</td>
+    <td>{{ item.category }}</td>
+    <td>{{ item.price }}</td>
+    <td><img src="{{ item.imageUrl }}" width="60"></td>
+    <td>{{ item.available ? "Available" : "Unavailable" }}</td>
+    <td>
+        <a href="/vendor/menu/edit/{{ item.id }}" class="btn btn-sm">Edit</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

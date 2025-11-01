@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="layout :: body">
+<div th:fragment="content">
+    <div class="text-center mt-5">
+        <h1>Welcome to Smart Canteen</h1>
+        <p class="lead">Order delicious food anytime!</p>
+        <a class="btn btn-primary" th:href="@{/login}">Login</a>
+        <a class="btn btn-success" th:href="@{/signup}">Sign Up</a>
+    </div>
+</div>
+</html>

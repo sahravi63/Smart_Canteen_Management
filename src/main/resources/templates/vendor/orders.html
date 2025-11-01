@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<h2 class="page-title">Customer Orders</h2>
+
+<table class="table">
+<tr>
+    <th>#</th>
+    <th>User</th>
+    <th>Amount (₹)</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+{% for order in orders %}
+<tr>
+    <td>#{{ order.id }}</td>
+    <td>{{ order.user_name }}</td>
+    <td>₹{{ order.total_amount }}</td>
+    <td>
+        <form action="/vendor/orders/{{ order.id }}/status" method="post">
+            <select name="status" onchange="this.form.submit()">
+                <option {{ order.status=='PENDING'?'selected':'' }}>PENDING</option>
+                <option {{ order.status=='ACCEPTED'?'selected':'' }}>ACCEPTED</option>
+                <option {{ order.status=='PREPARING'?'selected':'' }}>PREPARING</option>
+                <option {{ order.status=='DELIVERED'?'selected':'' }}>DELIVERED</option>
+                <option {{ order.status=='CANCELLED'?'selected':'' }}>CANCELLED</option>
+            </select>
+        </form>
+    </td>
+    <td>
+        <a class="btn btn-sm" href="/vendor/orders/{{ order.id }}">View</a>
+    </td>
+</tr>
+{% endfor %}
+</table>
+
+{% endblock %}

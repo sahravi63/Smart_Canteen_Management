@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title} ?: 'Canteen Management'">Canteen</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<header>
+    <h1>Canteen Management System</h1>
+    <hr>
+</header>
+
+<main th:fragment="body">
+    <!-- Page content gets inserted here -->
+</main>
+
+<footer>
+    <hr>
+    <p>&copy; 2025 Canteen System</p>
+</footer>
+</body>
+</html>

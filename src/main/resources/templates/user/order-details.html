@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block title %}Order Details{% endblock %}
+
+{% block content %}
+
+<div class="order-details-container">
+
+    <h2 class="page-title">Order Details</h2>
+
+    <!-- Order Summary -->
+    <div class="order-summary-box">
+        <p><strong>Order ID:</strong> #{{ order.id }}</p>
+        <p><strong>Order Date:</strong> {{ order.date }}</p>
+        <p><strong>Vendor:</strong> {{ order.vendor_name }}</p>
+        <p><strong>Status:</strong> 
+            <span class="order-status {{ order.status | lower }}">{{ order.status }}</span>
+        </p>
+    </div>
+
+    <!-- Order Items -->
+    <div class="section">
+        <h3>Ordered Items</h3>
+
+        <table class="table">
+            <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price (₹)</th>
+                <th>Total (₹)</th>
+            </tr>
+
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.itemName }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.price * item.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- Payment Summary -->
+    <div class="payment-summary">
+        <h3>Payment Summary</h3>
+        <p><strong>Subtotal:</strong> ₹{{ order.subtotal }}</p>
+        <p><strong>Delivery Charges:</strong> ₹{{ order.delivery_fee }}</p>
+        <p><strong>Tax:</strong> ₹{{ order.tax }}</p>
+        <p class="grand-total"><strong>Grand Total:</strong> ₹{{ order.total_amount }}</p>
+    </div>
+
+    <!-- Action -->
+    <a href="/user/orders" class="btn btn-primary">Back to Orders</a>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<h2>System Analytics</h2>
+
+<div class="stats-grid">
+    <div class="card">Total Users: {{ stats.total_users }}</div>
+    <div class="card">Total Vendors: {{ stats.total_vendors }}</div>
+    <div class="card">Total Orders: {{ stats.total_orders }}</div>
+    <div class="card">Revenue: ₹{{ stats.total_revenue }}</div>
+</div>
+
+<canvas id="chart"></canvas>
+
+<script>
+// Add your analytics chart later
+</script>
+{% endblock %}

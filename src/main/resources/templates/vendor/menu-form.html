@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Menu Item{% endblock %}
+
+{% block content %}
+<h2 class="page-title">{{ formTitle }}</h2>
+
+<form method="post">
+
+    <label>Item Name</label>
+    <input type="text" name="name" value="{{ item.name }}" required class="input-field"/>
+
+    <label>Description</label>
+    <textarea name="description" class="input-field" required>{{ item.description }}</textarea>
+
+    <label>Price (₹)</label>
+    <input type="number" name="price" value="{{ item.price }}" step="0.10" required class="input-field"/>
+
+    <label>Category</label>
+    <select name="category" class="input-field">
+        <option>BREAKFAST</option>
+        <option>LUNCH</option>
+        <option>SNACKS</option>
+        <option>BEVERAGES</option>
+    </select>
+
+    <label>Image URL</label>
+    <input type="text" name="imageUrl" value="{{ item.imageUrl }}" class="input-field"/>
+
+    <label>Available</label>
+    <select name="available" class="input-field">
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+    </select>
+
+    <button class="btn btn-success" type="submit">Save</button>
+</form>
+
+{% endblock %}

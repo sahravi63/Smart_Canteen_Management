@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | Smart Canteen</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .header h2 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .back-link:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .checkout-container {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .order-items {
+            margin-bottom: 30px;
+        }
+
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            animation: slideIn 0.5s ease backwards;
+        }
+
+        .order-item:nth-child(1) { animation-delay: 0.1s; }
+        .order-item:nth-child(2) { animation-delay: 0.2s; }
+        .order-item:nth-child(3) { animation-delay: 0.3s; }
+        .order-item:nth-child(4) { animation-delay: 0.4s; }
+
+        .order-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 3px;
+        }
+
+        .item-quantity {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .item-subtotal {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 1.1rem;
+        }
+
+        .order-summary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .summary-label {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .summary-value {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .total-row {
+            border-top: 2px solid rgba(255,255,255,0.3);
+            margin-top: 15px;
+            padding-top: 15px;
+        }
+
+        .total-row .summary-label {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .total-row .summary-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .payment-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .pay-button {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            padding: 18px 60px;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pay-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .pay-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .pay-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(76, 175, 80, 0.4);
+        }
+
+        .pay-button:active {
+            transform: translateY(-1px);
+        }
+
+        .pay-button span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .secure-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .secure-icon {
+            color: #4caf50;
+            font-size: 1.2rem;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .loading-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            animation: pulse 1.5s ease infinite;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h2 {
+                font-size: 2rem;
+            }
+
+            .checkout-container {
+                padding: 20px;
+            }
+
+            .pay-button {
+                width: 100%;
+                padding: 18px 30px;
+            }
+
+            .order-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .item-subtotal {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h2>💳 Checkout</h2>
+        <a th:href="@{/user/cart}" class="back-link">← Back to Cart</a>
+    </div>
+
+    <div class="checkout-container">
+        <!-- Order Items -->
+        <div class="order-items">
+            <h3 class="section-title">
+                <span>📦</span>
+                <span>Order Summary</span>
+            </h3>
+
+            <div class="order-item" th:each="item : ${cartItems}">
+                <div class="item-info">
+                    <div class="item-name" th:text="${item.menuItem.name}">Item Name</div>
+                    <div class="item-quantity">Qty: <span th:text="${item.quantity}">1</span></div>
+                </div>
+                <div class="item-subtotal">₹<span th:text="${item.subtotal}">0.00</span></div>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+            <div class="summary-row">
+                <span class="summary-label">Total Items:</span>
+                <span class="summary-value" th:text="${itemCount}">0</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Subtotal:</span>
+                <span class="summary-value">₹<span th:text="${cartTotal}">0.00</span></span>
+            </div>
+            <div class="summary-row total-row">
+                <span class="summary-label">Total Amount:</span>
+                <span class="summary-value">₹<span th:text="${cartTotal}">0.00</span></span>
+            </div>
+        </div>
+
+        <!-- Payment Section -->
+        <div class="payment-section">
+            <button id="payBtn" class="pay-button">
+                <span>🔒 Proceed to Payment</span>
+            </button>
+            <div class="secure-badge">
+                <span class="secure-icon">🔒</span>
+                <span>Secured by Razorpay</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <h3>Processing Payment...</h3>
+        <p>Please wait while we confirm your order</p>
+    </div>
+</div>
+
+<!-- Hidden Fields -->
+<input type="hidden" id="orderId" th:value="${razorpayOrderId}">
+<input type="hidden" id="amount" th:value="${amount}">
+<input type="hidden" id="key" th:value="${razorpayKey}">
+<input type="hidden" id="currency" th:value="${currency}">
+
+<script>
+    document.getElementById("payBtn").onclick = function (e) {
+        e.preventDefault();
+
+        let orderId = document.getElementById("orderId").value;
+        let amount = document.getElementById("amount").value;
+        let key = document.getElementById("key").value;
+        let currency = document.getElementById("currency").value;
+
+        let options = {
+            "key": key,
+            "amount": amount,
+            "currency": currency,
+            "name": "Smart Canteen",
+            "description": "Food Order",
+            "image": "https://cdn-icons-png.flaticon.com/512/1046/1046784.png",
+            "order_id": orderId,
+            "handler": function (response) {
+                // Show loading overlay
+                document.getElementById("loadingOverlay").classList.add("active");
+
+                // Payment success -> call backend
+                fetch("/payment-success", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_signature: response.razorpay_signature
+                    })
+                }).then(res => {
+                    if (res.ok) {
+                        window.location.href = "/user/orders";
+                    } else {
+                        alert("Payment verification failed. Please contact support.");
+                        document.getElementById("loadingOverlay").classList.remove("active");
+                    }
+                }).catch(error => {
+                    alert("An error occurred. Please try again.");
+                    document.getElementById("loadingOverlay").classList.remove("active");
+                });
+            },
+            "modal": {
+                "ondismiss": function() {
+                    console.log("Payment cancelled by user");
+                }
+            },
+            "theme": {
+                "color": "#667eea"
+            }
+        };
+
+        let rzp = new Razorpay(options);
+        rzp.on('payment.failed', function (response){
+            alert("Payment failed: " + response.error.description);
+        });
+        rzp.open();
+    }
+</script>
+</body>
+</html>
